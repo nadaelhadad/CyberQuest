@@ -16,30 +16,32 @@ export const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Reset errors
     setErrors({ username: '', password: '' });
-    
+
     // Validate
     let valid = true;
     if (!username) {
-      setErrors(prev => ({ ...prev, username: 'Username is required' }));
+      setErrors((prev) => ({ ...prev, username: 'Username is required' }));
       valid = false;
     }
-    
+
     if (!password) {
-      setErrors(prev => ({ ...prev, password: 'Password is required' }));
+      setErrors((prev) => ({ ...prev, password: 'Password is required' }));
       valid = false;
     }
-    
+
     if (!valid) return;
-    
+
     // Attempt login
-    await login(username, password);
-    
-    // If successful, navigate to map
-    if (!error) {
+    try {
+      await login(username, password);
+
+      // If successful, navigate to map
       navigate('/map');
+    } catch (err) {
+      console.error('Login failed:', err);
     }
   };
 
@@ -74,7 +76,7 @@ export const LoginPage: React.FC = () => {
           <h1 className="text-2xl font-cyber mb-1">Login to CyberQuest</h1>
           <p className="text-gray-400 text-sm">Enter your credentials to access your account</p>
         </motion.div>
-        
+
         {error && (
           <motion.div
             variants={itemVariants}
@@ -83,7 +85,7 @@ export const LoginPage: React.FC = () => {
             {error}
           </motion.div>
         )}
-        
+
         <motion.form onSubmit={handleSubmit} variants={itemVariants}>
           <div className="space-y-4 mb-6">
             <div>
@@ -99,7 +101,7 @@ export const LoginPage: React.FC = () => {
                 prefix={<User size={18} className="text-gray-400" />}
               />
             </div>
-            
+
             <div>
               <Input
                 type="password"
@@ -114,7 +116,7 @@ export const LoginPage: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <Button
             type="submit"
             variant="primary"
@@ -126,7 +128,7 @@ export const LoginPage: React.FC = () => {
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </Button>
-          
+
           <div className="text-center text-sm text-gray-400">
             <p>
               Don't have an account?{' '}
@@ -155,41 +157,43 @@ export const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Reset errors
     setErrors({ username: '', password: '', confirmPassword: '' });
-    
+
     // Validate
     let valid = true;
     if (!username) {
-      setErrors(prev => ({ ...prev, username: 'Username is required' }));
+      setErrors((prev) => ({ ...prev, username: 'Username is required' }));
       valid = false;
     } else if (username.length < 4) {
-      setErrors(prev => ({ ...prev, username: 'Username must be at least 4 characters' }));
+      setErrors((prev) => ({ ...prev, username: 'Username must be at least 4 characters' }));
       valid = false;
     }
-    
+
     if (!password) {
-      setErrors(prev => ({ ...prev, password: 'Password is required' }));
+      setErrors((prev) => ({ ...prev, password: 'Password is required' }));
       valid = false;
     } else if (password.length < 6) {
-      setErrors(prev => ({ ...prev, password: 'Password must be at least 6 characters' }));
+      setErrors((prev) => ({ ...prev, password: 'Password must be at least 6 characters' }));
       valid = false;
     }
-    
+
     if (password !== confirmPassword) {
-      setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
+      setErrors((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }));
       valid = false;
     }
-    
+
     if (!valid) return;
-    
+
     // Attempt registration
-    await register(username, password);
-    
-    // If successful, navigate to map
-    if (!error) {
+    try {
+      await register(username, password);
+
+      // If successful, navigate to map
       navigate('/map');
+    } catch (err) {
+      console.error('Registration failed:', err);
     }
   };
 
@@ -224,7 +228,7 @@ export const RegisterPage: React.FC = () => {
           <h1 className="text-2xl font-cyber mb-1">Join CyberQuest</h1>
           <p className="text-gray-400 text-sm">Create your account to start the adventure</p>
         </motion.div>
-        
+
         {error && (
           <motion.div
             variants={itemVariants}
@@ -233,7 +237,7 @@ export const RegisterPage: React.FC = () => {
             {error}
           </motion.div>
         )}
-        
+
         <motion.form onSubmit={handleSubmit} variants={itemVariants}>
           <div className="space-y-4 mb-6">
             <div>
@@ -249,7 +253,7 @@ export const RegisterPage: React.FC = () => {
                 prefix={<User size={18} className="text-gray-400" />}
               />
             </div>
-            
+
             <div>
               <Input
                 type="password"
@@ -263,7 +267,7 @@ export const RegisterPage: React.FC = () => {
                 prefix={<Key size={18} className="text-gray-400" />}
               />
             </div>
-            
+
             <div>
               <Input
                 type="password"
@@ -278,7 +282,7 @@ export const RegisterPage: React.FC = () => {
               />
             </div>
           </div>
-          
+
           <Button
             type="submit"
             variant="secondary"
@@ -290,7 +294,7 @@ export const RegisterPage: React.FC = () => {
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </Button>
-          
+
           <div className="text-center text-sm text-gray-400">
             <p>
               Already have an account?{' '}
