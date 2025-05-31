@@ -12,5 +12,23 @@
   <body class="bg-cyber-dark text-white font-future">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Fetch data from the backend API
+      fetch('http://localhost:3000/api/endpoint')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Data from backend:', data);
+          const root = document.getElementById('root');
+          root.innerHTML = `<h1>${data.message}</h1>`;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    </script>
   </body>
 </html>

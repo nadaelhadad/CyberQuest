@@ -11,7 +11,7 @@ interface AuthState {
   login: (username: string, password: string) => Promise<void>;
   register: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  setUser: (user: User, token: string) => void;
+  setUser: (user: User) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -21,58 +21,71 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoading: false,
   error: null,
 
-  setUser: (user: User, token: string) => {
-    set({ user, token, isAuthenticated: true });
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+  setUser: (user: User) => {
+    set({ user, isAuthenticated: true });
   },
 
   login: async (username: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await axios.post(`http://localhost:5000/api/auth/login`, {
+      const response = await axios.post('http://localhost:3000/api/auth/login', {
         username,
         password,
       });
 
-      const { user, token } = res.data;
-      set({ user, token, isAuthenticated: true, isLoading: false });
+      const { user, token } = response.data;
+      
+      // Store token and user data
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-    } catch (error: unknown) {
-      const message =
-        axios.isAxiosError(error) && error.response?.data?.message
-          ? error.response.data.message
-          : 'Login failed. Please try again.';
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      set({ 
+        user, 
+        token, 
+        isAuthenticated: true, 
+        isLoading: false 
+      });
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Login failed. Please try again.';
       set({ error: message, isLoading: false });
+      throw new Error(message);
     }
   },
 
   register: async (username: string, password: string) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await axios.post(`http://localhost:5000/api/auth/register`, {
+      const response = await axios.post('http://localhost:3000/api/auth/register', {
         username,
         password,
       });
 
-      const { user, token } = res.data;
-      set({ user, token, isAuthenticated: true, isLoading: false });
+      const { user, token } = response.data;
+      
+      // Store token and user data
       localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-    } catch (error: unknown) {
-      const message =
-        axios.isAxiosError(error) && error.response?.data?.message
-          ? error.response.data.message
-          : 'Registration failed. Please try again.';
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      set({ 
+        user, 
+        token, 
+        isAuthenticated: true, 
+        isLoading: false 
+      });
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Registration failed. Please try again.';
       set({ error: message, isLoading: false });
+      throw new Error(message);
     }
   },
 
   logout: () => {
-    set({ user: null, token: null, isAuthenticated: false });
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.replace('/login');
+    localStorage.removeItem('currentUser');
+    set({ 
+      user: null, 
+      token: null, 
+      isAuthenticated: false 
+    });
   },
 }));
