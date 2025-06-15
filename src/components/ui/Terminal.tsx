@@ -162,6 +162,8 @@ const Terminal: React.FC<TerminalProps> = ({
               onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent border-none outline-none text-white"
               autoFocus={autoFocus}
+              placeholder="Type your command here"
+              title="Command input field"
             />
           </div>
         )}

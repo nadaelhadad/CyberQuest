@@ -6,7 +6,7 @@ import Button from '../ui/Button';
 import { useAuthStore } from '../../store/authStore';
 
 const Navbar: React.FC = () => {
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, isInitialized } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [hackerName, setHackerName] = useState('');
@@ -77,8 +77,8 @@ const Navbar: React.FC = () => {
   
   const navLinks = [
     { to: '/', label: 'Home', icon: <Shield size={18} /> },
-    { to: '/map', label: 'Game Map', icon: <BarChart2 size={18} /> },
-    { to: '/leaderboard', label: 'Leaderboard', icon: <BarChart2 size={18} /> },
+    { to: '/map', label: 'Game Map', icon: <BarChart2 size={18} />, protected: true },
+    { to: '/leaderboard', label: 'Leaderboard', icon: <BarChart2 size={18} />, protected: true },
   ];
   
   const mobileMenuVariants = {
@@ -93,6 +93,11 @@ const Navbar: React.FC = () => {
       transition: { duration: 0.3 }
     }
   };
+
+  // Don't render until auth is initialized
+  if (!isInitialized) {
+    return null;
+  }
 
   return (
     <motion.nav 
@@ -116,21 +121,26 @@ const Navbar: React.FC = () => {
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          {navLinks.map((link) => (
-            <motion.div key={link.to} variants={itemVariants}>
-              <Link 
-                to={link.to}
-                className={`flex items-center space-x-1 text-sm font-future ${
-                  location.pathname === link.to 
-                    ? 'text-cyber-blue-100 font-semibold'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {link.icon}
-                <span>{link.label}</span>
-              </Link>
-            </motion.div>
-          ))}
+          {navLinks.map((link) => {
+            // Hide protected links if not authenticated
+            if (link.protected && !isAuthenticated) return null;
+            
+            return (
+              <motion.div key={link.to} variants={itemVariants}>
+                <Link 
+                  to={link.to}
+                  className={`flex items-center space-x-1 text-sm font-future ${
+                    location.pathname === link.to 
+                      ? 'text-cyber-blue-100 font-semibold'
+                      : 'text-gray-300 hover:text-white'
+                  }`}
+                >
+                  {link.icon}
+                  <span>{link.label}</span>
+                </Link>
+              </motion.div>
+            );
+          })}
           
           {isAuthenticated ? (
             <div className="flex items-center space-x-4">
@@ -249,29 +259,31 @@ const Navbar: React.FC = () => {
               <Shield size={24} className="text-cyber-blue-100" />
               <span className="font-cyber text-xl">CyberQuest</span>
             </Link>
-            <button 
-              className="text-white"
-              onClick={toggleMenu}
-            >
+            <button className="text-white" onClick={toggleMenu} aria-label="Close menu">
               <X size={24} />
             </button>
           </div>
           
           <div className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <Link 
-                key={link.to}
-                to={link.to}
-                className={`flex items-center space-x-3 p-2 rounded ${
-                  location.pathname === link.to 
-                    ? 'bg-cyber-gray text-cyber-blue-100'
-                    : 'text-gray-300'
-                }`}
-              >
-                {link.icon}
-                <span>{link.label}</span>
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              // Hide protected links if not authenticated
+              if (link.protected && !isAuthenticated) return null;
+              
+              return (
+                <Link 
+                  key={link.to}
+                  to={link.to}
+                  className={`flex items-center space-x-3 p-2 rounded ${
+                    location.pathname === link.to 
+                      ? 'bg-cyber-gray text-cyber-blue-100'
+                      : 'text-gray-300'
+                  }`}
+                >
+                  {link.icon}
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
           </div>
           
           <div className="mt-auto pt-4 border-t border-cyber-gray">

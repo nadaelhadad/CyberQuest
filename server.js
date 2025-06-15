@@ -18,7 +18,7 @@ const pool = new Pool({
   host: 'localhost',
   database: 'cyberquest',
   password: 'root',
-  port: 5432,
+  port: 5432, 
 });
 
 // Initialize database tables
