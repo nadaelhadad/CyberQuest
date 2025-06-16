@@ -4,7 +4,7 @@ export const categories: Category[] = [
   {
     "id": "crypto",
     "name": "Cryptography",
-    "description": "Agent! We found secret messages from a group called The Hollow Mark. No one knows who they are. No faces. No names. Just encrypted files. These messages may tell us where they will strike next. You must break the codes. Find the truth. Stop the attack.",
+    "description": "Master the art of secure communications and code breaking. Learn various encryption techniques and how to crack them.",
     "icon": "Shield",
     "color": "cyber-black",
     "isLocked": false,
@@ -13,7 +13,7 @@ export const categories: Category[] = [
         "id": "crypto-1",
         "categoryId": "crypto",
         "title": "🔑 The Caesar Puzzle",
-        "description": " Agent! We found secret messages from a group called The Hollow Mark. No one knows who they are. No faces. No names. Just encrypted files. These messages may tell us where they will strike next. You must break the codes. Find the truth. Stop the attack. You found a phone. The lock screen shows strange letters. It's a Caesar Cipher. Break it to unlock the phone.",
+        "description": "You found a phone. The lock screen shows strange letters. It's a Caesar Cipher. Break it to unlock the phone.",
         "difficulty": 1,
         "points": 50,
         "solution": "SEND LOGS TO SERVER 17",
@@ -38,52 +38,58 @@ export const categories: Category[] = [
       {
         "id": "crypto-2",
         "categoryId": "crypto",
-        "title": "📡 Dock 17 Transmission",
-        "description": "After you unlocked the phone, a hidden message was sent to HQ. It came from a terminal near Dock 17. The contents look strange but structured. There's a hidden message inside, but it's not easy to read.",
+        "title": "🧊 Layered Cry – Silver",
+        "description": "Next message is wrapped three times. Strip every layer to find strike two.",
         "difficulty": 2,
         "points": 100,
-        "solution": "STRIKE AT DAWN DOCK 17 NO MISTAKES",
+        "solution": "CTF{Strike_02_Subway_21:15}",
         "hints": [
           {
-            "id": "crypto-2-hint-1",
-            "text": "The message is encoded in three layers.",
+            "id": "layer1",
+            "text": "Hint: Ends in == or = ? That's not random…",
             "cost": 15,
             "isRevealed": false
           },
           {
-            "id": "crypto-2-hint-2",
-            "text": "you can try Hex.",
+            "id": "layer2",
+            "text": "Hint: Hex digits cloak the next layer.",
             "cost": 25,
+            "isRevealed": false
+          },
+          {
+            "id": "layer3",
+            "text": "Hint: Letters dancing 13 places away.",
+            "cost": 35,
             "isRevealed": false
           }
         ],
-        "flag": "STRIKE AT DAWN DOCK 17 NO MISTAKES",
+        "flag": "CTF{Strike_02_Subway_21:15}",
         "isCompleted": false,
         "isLocked": true
       },
       {
         "id": "crypto-3",
         "categoryId": "crypto",
-        "title": "🧬 His Real Name",
-        "description": "At Dock 17, you find a laptop. One file only has a SHA-256 hash and a message: 'You already know his name.' It's the person she feared. Can you crack it?",
-        "difficulty": 3,
-        "points": 150,
-        "solution": "LIAM",
+        "title": "🧊 Layered Cry – Silver",
+        "description": "Next message is wrapped three times. Strip every layer to find strike two.",
+        "difficulty": 2,
+        "points": 100,
+        "solution": "CTF{Strike_02_Subway_21:15}",
         "hints": [
           {
             "id": "crypto-3-hint-1",
-            "text": "Try popular names, one word only.",
-            "cost": 20,
+            "text": "Check the file ending. Decode in order: Base64 → Hex → ROT13.",
+            "cost": 15,
             "isRevealed": false
           },
           {
             "id": "crypto-3-hint-2",
-            "text": "Use a hash cracker like CrackStation or Hash-Identifier.",
-            "cost": 30,
+            "text": "The message contains coordinates and a time.",
+            "cost": 25,
             "isRevealed": false
           }
         ],
-        "flag": "LIAM",
+        "flag": "CTF{Strike_02_Subway_21:15}",
         "isCompleted": false,
         "isLocked": true
       },
@@ -199,7 +205,7 @@ export const categories: Category[] = [
                     },
                     {
                       "id": "reversing-2-hint-2",
-                      "text": "Guess the maker’s own words.",
+                      "text": "Guess the maker's own words.",
                       "cost": 50,
                       "isRevealed": false
                   },
@@ -231,7 +237,7 @@ export const categories: Category[] = [
                     },
                     {
                       "id": "reversing-3-hint-2",
-                      "text": "Base64 shields the shell’s heart.",
+                      "text": "Base64 shields the shell's heart.",
                       "cost": 60,
                       "isRevealed": false
                   },
@@ -409,7 +415,7 @@ export const categories: Category[] = [
               "hints": [
                   {
                       "id": "web-4-hint-1",
-                      "text": "Timing bends the system’s rules.",
+                      "text": "Timing bends the system's rules.",
                       "cost": 50,
                       "isRevealed": false
                   },
@@ -476,7 +482,7 @@ export const categories: Category[] = [
         {
             "id": "forensics-1",
             "categoryId": "forensics",
-            "title": "�� Forgotten Selfie",
+            "title": "🔍 Forgotten Selfie",
             "description": "Every night at 02:17, a pirate signal hijacks a TV channel for 61 seconds. The video? Empty streets. The audio? A voice played backward: 'Find me before dawn.' We recovered five clues. Uncover the hijacker's next move—and who they really are. A selfie from the latest crash says, 'Already left the city.' Prove the speaker never left town.",
             "difficulty": 1,
             "points": 50,
@@ -540,7 +546,7 @@ export const categories: Category[] = [
         {
             "id": "forensics-3",
             "categoryId": "forensics",
-            "title": "�� Three-Second Burst",
+            "title": "🔍 Three-Second Burst",
             "description": "Only three seconds of PCAP traffic were captured. Is that enough to find the leak?",
             "difficulty": 3,
             "points": 150,
@@ -592,7 +598,7 @@ export const categories: Category[] = [
               },
               {
                 "id": "forensics-4-hint-3",
-                "text": "Errors whisper secrets they shouldn’t.",
+                "text": "Errors whisper secrets they shouldn't.",
                 "cost": 90,
                 "isRevealed": false
             }
@@ -618,13 +624,13 @@ export const categories: Category[] = [
                 },
                 {
                   "id": "forensics-5-hint-2",
-                  "text": "Voices emerge at the storm’s peak.",
+                  "text": "Voices emerge at the storm's peak.",
                   "cost": 90,
                   "isRevealed": false
               },
               {
                 "id": "forensics-5-hint-3",
-                "text": "Transmission’s start hides the key.",
+                "text": "Transmission's start hides the key.",
                 "cost": 120,
                 "isRevealed": false
             }

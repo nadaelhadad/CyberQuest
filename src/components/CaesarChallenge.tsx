@@ -140,8 +140,14 @@ const CaesarChallenge: React.FC = () => {
     <div className="min-h-screen bg-cyber-dark bg-cover bg-center pt-20 pb-12 px-4 font-mono" style={{ backgroundImage: "url('/images/bg-circuit-dark.jpg')" }}>
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <button onClick={() => navigate('/map')} className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4">
-            <ArrowLeft size={16} className="mr-2" /> Back to Map
+          <button 
+            onClick={() => {
+              localStorage.removeItem('caesarIntroShown');
+              navigate('/challenge/crypto-1?showIntro=true');
+            }} 
+            className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4"
+          >
+            <ArrowLeft size={16} className="mr-2" /> Back to Story
           </button>
 
           <Card className="p-6 bg-cyber-black bg-opacity-80 border border-cyber-blue-200">
@@ -345,4 +351,4 @@ const CaesarChallenge: React.FC = () => {
   );
 };
 
-export default CaesarChallenge;
+export default CaesarChallenge;
