@@ -123,8 +123,8 @@ const Dock17Challenge = () => {
       <div className="fixed inset-0">
         <MeshBackground />
       </div>
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
-        <div className="lg:col-span-8 lg:col-start-3">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10 items-center min-h-[80vh]">
+        <div className="lg:col-span-9 lg:col-start-2 xl:col-span-9 xl:col-start-2 flex flex-col justify-center">
           <button onClick={() => navigate('/map')} className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4">
             <ArrowLeft size={16} className="mr-2" /> Back to Map
           </button>
@@ -134,7 +134,7 @@ const Dock17Challenge = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="p-6 bg-cyber-black bg-opacity-80 border border-cyber-blue-200">
+            <Card className="p-12 md:p-16 xl:p-20 bg-cyber-black bg-opacity-80 border border-cyber-blue-200 text-lg xl:text-xl min-h-[500px] flex flex-col justify-center">
               <div className="mb-6">
                 <h1 className="text-2xl font-cyber text-cyber-blue-100 mb-2">🧊 Layered Cry – Silver</h1>
                 <div className="flex items-center gap-4">
@@ -153,7 +153,7 @@ const Dock17Challenge = () => {
                     <Download size={16} />
                     Download
                   </Button>
-            </div>
+                </div>
               </div>
 
               {/* Tool Hints Section */}
@@ -169,38 +169,38 @@ const Dock17Challenge = () => {
                     <span className="text-xl">🧪</span>
                     CyberChef - Advanced Decryption Tool
                   </a>
-            </div>
+                </div>
               </div>
               
               {/* Flag Submission */}
               <div className="mb-4">
                 <Input
                   fullWidth
-                value={flagInput}
-                onChange={(e) => setFlagInput(e.target.value)}
+                  value={flagInput}
+                  onChange={(e) => setFlagInput(e.target.value)}
                   placeholder="Enter your flag here"
-              />
+                />
                 <Button 
-                onClick={handleFlagSubmit}
+                  onClick={handleFlagSubmit}
                   variant="primary" 
                   className="mt-2 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-violet-500/20 font-semibold"
                 >
                   <Send size={16} className="mr-2" /> Submit
                 </Button>
-              {submissionStatus !== 'idle' && (
+                {submissionStatus !== 'idle' && (
                   <div className={`mt-3 p-2 text-sm rounded ${
                     submissionStatus === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
-                }`}>
-                  {submissionMessage}
-                </div>
-              )}
+                  }`}>
+                    {submissionMessage}
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-between text-white text-sm">
                 <div className="flex items-center gap-2">
                   <Clock size={16} /> {formatTime(timer)}
                 </div>
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   <Award size={16} /> {currentChallenge.points} pts | Player: {gameProgress.score} pts
                 </div>
               </div>
@@ -208,10 +208,10 @@ const Dock17Challenge = () => {
           </motion.div>
         </div>
 
-        <div className="lg:col-span-2 lg:col-start-11">
+        <div className="lg:col-span-2 lg:col-start-11 flex flex-col justify-center">
           <Card className="p-4 bg-cyber-black border border-cyber-blue-100 backdrop-blur-sm bg-opacity-90">
-              <button
-                onClick={() => setHintsExpanded(!hintsExpanded)}
+            <button
+              onClick={() => setHintsExpanded(!hintsExpanded)}
               className="w-full flex items-center justify-between bg-gradient-to-r from-cyan-600/20 to-blue-600/20 p-2 rounded hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-300"
             >
               <span className="flex items-center gap-2">
@@ -222,7 +222,7 @@ const Dock17Challenge = () => {
                 </Badge>
               </span>
               {hintsExpanded ? <ChevronUp size={16} className="text-cyber-blue-100" /> : <ChevronDown size={16} className="text-cyber-blue-100" />}
-              </button>
+            </button>
             {hintsExpanded && (
               <ul className="mt-3 space-y-2">
                 {currentChallenge.hints.map((hint, index) => {
@@ -231,15 +231,15 @@ const Dock17Challenge = () => {
                     <li key={hint.id} className="bg-gradient-to-r from-cyan-600/10 to-blue-600/10 p-3 rounded border border-cyber-blue-200/20">
                       {isRevealed ? (
                         <p className="text-cyber-blue-100 text-sm">{hint.text}</p>
-                    ) : (
-                      <button
-                        onClick={() => handleHintReveal(hint)}
+                      ) : (
+                        <button
+                          onClick={() => handleHintReveal(hint)}
                           className="w-full flex items-center justify-between text-cyber-gray-400 hover:text-cyber-blue-100 transition-colors duration-200"
-                      >
+                        >
                           <span className="text-sm">Hint {index + 1}</span>
                           <span className="text-xs bg-cyber-blue-200/20 px-2 py-1 rounded">{hint.cost} pts</span>
-                      </button>
-                    )}
+                        </button>
+                      )}
                     </li>
                   );
                 })}
@@ -250,7 +250,7 @@ const Dock17Challenge = () => {
       </div>
 
       <AnimatePresence>
-      {showSuccessModal && (
+        {showSuccessModal && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -329,7 +329,7 @@ const Dock17Challenge = () => {
                   <div className="flex items-center justify-center gap-2 text-cyber-blue-100 text-base">
                     <Clock size={20} />
                     <span>Time: {formatTime(timer)}</span>
-                </div>
+                  </div>
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
@@ -343,8 +343,8 @@ const Dock17Challenge = () => {
                   <Button
                     variant="outline"
                     className="flex items-center justify-center gap-2 border-cyber-blue-200 text-cyber-blue-100 px-8 py-3 rounded-lg text-lg font-bold hover:bg-cyber-blue-900/30 hover:scale-105 transition-all duration-300"
-                  onClick={() => navigate('/map')}
-                >
+                    onClick={() => navigate('/map')}
+                  >
                     Return to Map
                   </Button>
                 </motion.div>
