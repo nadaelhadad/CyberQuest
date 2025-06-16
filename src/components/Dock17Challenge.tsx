@@ -1,30 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Award, Send, Copy, ChevronDown, ChevronUp, Lightbulb, CheckCircle, Trophy, Star, Lock, Radio, Wifi, Eye, Cpu, AlertTriangle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Download, Lightbulb, Send, Copy, ChevronDown, ChevronUp, CheckCircle, Trophy, Star, Clock, Award, Sparkles, ArrowRight } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
-import CyberChef from './CyberChef';
+import Button from './ui/Button';
+import Input from './ui/Input';
+import Card from './ui/Card';
+import Badge from './ui/Badge';
+import MeshBackground from './ui/MeshBackground';
 import { Hint } from '../types';
 
 const Dock17Challenge = () => {
   const navigate = useNavigate();
   const { submitFlag, gameProgress, currentChallenge, setCurrentChallenge, useHint } = useGameStore();
   const [flagInput, setFlagInput] = useState('');
-  const [submissionStatus, setSubmissionStatus] = useState('idle');
+  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
   const [timer, setTimer] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [hintsExpanded, setHintsExpanded] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [revealedHints, setRevealedHints] = useState(new Set());
-  const [transmissionActive, setTransmissionActive] = useState(false);
-  const [matrixRain, setMatrixRain] = useState<Array<{
-    id: number;
-    x: number;
-    y: number;
-    speed: number;
-    char: string;
-  }>>([]);
-  const [scanlines, setScanlines] = useState(true);
+  const [revealedHints, setRevealedHints] = useState<Set<string>>(new Set());
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24
+      }
+    }
+  };
 
   useEffect(() => {
     if (currentChallenge?.id === "crypto-2") {
@@ -44,20 +63,6 @@ const Dock17Challenge = () => {
     return () => clearInterval(intervalId);
   }, [isTimerRunning]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTransmissionActive(prev => !prev);
-    }, 1500);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const scanlineInterval = setInterval(() => {
-      setScanlines(prev => !prev);
-    }, 50);
-    return () => clearInterval(scanlineInterval);
-  }, []);
-
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -67,38 +72,42 @@ const Dock17Challenge = () => {
   const handleFlagSubmit = () => {
     if (!flagInput.trim()) {
       setSubmissionStatus('error');
-      setSubmissionMessage('🚫 TRANSMISSION INCOMPLETE - Enter decoded message');
+      setSubmissionMessage('❌ Please enter a flag');
       return;
     }
 
     const isCorrect = submitFlag(currentChallenge?.id || '', flagInput.trim());
     if (isCorrect) {
       setSubmissionStatus('success');
-      setSubmissionMessage('🎯 MISSION SUCCESS - Enemy plans exposed!');
+      setSubmissionMessage('✅ Correct! Well done, Agent.');
       setIsTimerRunning(false);
       setShowSuccessModal(true);
+      // Play success sound
+      const audio = new Audio('/sounds/success.mp3');
+      audio.volume = 0.3;
+      audio.play();
     } else {
       setSubmissionStatus('error');
-      setSubmissionMessage('⚠ DECRYPTION FAILED - Signal corrupted, try again');
+      setSubmissionMessage('❌ Incorrect flag. Try again.');
     }
 
     setTimeout(() => {
       setSubmissionStatus('idle');
       setSubmissionMessage('');
-    }, 4000);
+    }, 3000);
   };
 
   const handleHintReveal = (hint: Hint) => {
     if (gameProgress.score < hint.cost) {
       setSubmissionStatus('error');
-      setSubmissionMessage(`❌ INSUFFICIENT CLEARANCE - Need ${hint.cost} security points`);
+      setSubmissionMessage(`❌ Not enough points! Need ${hint.cost} points to reveal this hint.`);
       return;
     }
 
     useHint(hint.id);
     setRevealedHints(prev => new Set([...prev, hint.id]));
     setSubmissionStatus('success');
-    setSubmissionMessage(`🔓 CLASSIFIED INTEL ACCESSED - Cost: ${hint.cost} points`);
+    setSubmissionMessage(`✅ Hint revealed! -${hint.cost} points`);
 
     setTimeout(() => {
       setSubmissionStatus('idle');
@@ -109,203 +118,241 @@ const Dock17Challenge = () => {
   if (!currentChallenge) return null;
 
   return (
-    <div className="min-h-screen bg-cyber-dark bg-cover bg-center pt-20 pb-12 px-4 font-mono" style={{ backgroundImage: "url('/images/bg-circuit-dark.jpg')" }}>
-      {/* Matrix rain background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        {matrixRain.map(drop => (
-          <div
-            key={drop.id}
-            className="absolute text-green-400 text-xs font-mono pointer-events-none"
-            style={{
-              left: `${drop.x}%`,
-              top: `${drop.y}%`,
-              pointerEvents: 'none',
-              animation: `matrix-fall ${3 + Math.random() * 2}s linear infinite`
-            }}
-          >
-            {drop.char}
-          </div>
-        ))}
+    <div className="min-h-screen bg-cyber-dark pt-20 pb-12 px-4">
+      {/* Mesh Network Background */}
+      <div className="fixed inset-0">
+        <MeshBackground />
       </div>
-
-      {/* Scanlines effect */}
-      {scanlines && (
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
-          {Array.from({length: 50}).map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-full h-px bg-cyan-400 pointer-events-none"
-              style={{ top: `${i * 2}%` }}
-            />
-          ))}
-        </div>
-      )}
-
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10">
+        <div className="lg:col-span-8 lg:col-start-3">
           <button onClick={() => navigate('/map')} className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4">
             <ArrowLeft size={16} className="mr-2" /> Back to Map
           </button>
 
-          <div className="space-y-6">
-            {/* Challenge Info */}
-            <div className="bg-gradient-to-br from-gray-900 via-green-900/20 to-black border-2 border-green-500 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Eye size={24} className="text-green-400" />
-                <h1 className="text-2xl font-bold text-white">{currentChallenge.title}</h1>
-              </div>
-              <p className="text-gray-300">{currentChallenge.description}</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="p-6 bg-cyber-black bg-opacity-80 border border-cyber-blue-200">
+              <div className="mb-6">
+                <h1 className="text-2xl font-cyber text-cyber-blue-100 mb-2">🧊 Layered Cry – Silver</h1>
+                <div className="flex items-center gap-4">
+                  <p className="text-white text-lg flex-1">Next message is wrapped three times. Strip every layer to find strike two.</p>
+                  <Button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/assets/challenges/whisper2.txt';
+                      link.download = 'whisper2.txt';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20 font-semibold whitespace-nowrap"
+                  >
+                    <Download size={16} />
+                    Download
+                  </Button>
             </div>
-
-            {/* CyberChef Tool */}
-            <div className="space-y-6">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-white mb-2">CRYPTANALYSIS SUITE</h2>
-                <p className="text-gray-400">Advanced decryption tools for signal analysis</p>
               </div>
 
-              <CyberChef />
+              {/* Tool Hints Section */}
+              <div className="mb-6">
+                <h2 className="text-cyber-yellow text-sm font-bold mb-2">Decryption Tools</h2>
+                <div className="space-y-2">
+                  <a
+                    href="https://gchq.github.io/CyberChef"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20 font-semibold"
+                  >
+                    <span className="text-xl">🧪</span>
+                    CyberChef - Advanced Decryption Tool
+                  </a>
             </div>
-
-            {/* Flag Submission */}
-            <div className="bg-gradient-to-br from-gray-900 via-green-900/20 to-black border-2 border-green-500 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Eye size={24} className="text-green-400" />
-                <h3 className="text-xl font-bold text-white">MISSION OBJECTIVE: DECODE THE MESSAGE</h3>
               </div>
               
-              <input
-                type="text"
+              {/* Flag Submission */}
+              <div className="mb-4">
+                <Input
+                  fullWidth
                 value={flagInput}
                 onChange={(e) => setFlagInput(e.target.value)}
-                placeholder="Enter the fully decoded message here..."
-                className="w-full bg-black/50 text-white p-4 rounded-lg border border-green-500/50 mb-4 font-mono focus:border-green-400 focus:ring-1 focus:ring-green-400 backdrop-blur-sm"
+                  placeholder="Enter your flag here"
               />
-              
-              <button
+                <Button 
                 onClick={handleFlagSubmit}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-500 hover:to-emerald-500 transition-all flex items-center gap-2 font-semibold"
-              >
-                <Send size={16} /> 
-                TRANSMIT DECODED MESSAGE
-              </button>
-            
+                  variant="primary" 
+                  className="mt-2 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-violet-500/20 font-semibold"
+                >
+                  <Send size={16} className="mr-2" /> Submit
+                </Button>
               {submissionStatus !== 'idle' && (
-                <div className={`mt-4 p-4 text-sm rounded-lg font-semibold ${
-                  submissionStatus === 'success' 
-                    ? 'bg-green-900/50 text-green-300 border border-green-500/50' 
-                    : 'bg-red-900/50 text-red-300 border border-red-500/50'
+                  <div className={`mt-3 p-2 text-sm rounded ${
+                    submissionStatus === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
                 }`}>
                   {submissionMessage}
                 </div>
               )}
+              </div>
 
-              <div className="flex justify-between text-gray-300 text-sm mt-6 pt-4 border-t border-gray-600">
+              <div className="flex justify-between text-white text-sm">
                 <div className="flex items-center gap-2">
-                  <Clock size={16} /> 
-                  <span className="font-mono">{formatTime(timer)}</span>
+                  <Clock size={16} /> {formatTime(timer)}
                 </div>
-                <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
-                    <Award size={16} className="text-yellow-400" /> 
-                    <span>{currentChallenge.points} pts available</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Cpu size={16} className="text-cyan-400" />
-                    <span>Security Level: {gameProgress.score}</span>
-                  </div>
+                  <Award size={16} /> {currentChallenge.points} pts | Player: {gameProgress.score} pts
                 </div>
               </div>
-            </div>
-          </div>
+            </Card>
+          </motion.div>
         </div>
 
-        {/* Hints Panel */}
-        <div className="lg:col-span-1">
-          <div className="bg-gradient-to-br from-gray-900 via-green-900/20 to-black border-2 border-green-500 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white">CLASSIFIED INTEL</h3>
+        <div className="lg:col-span-2 lg:col-start-11">
+          <Card className="p-4 bg-cyber-black border border-cyber-blue-100 backdrop-blur-sm bg-opacity-90">
               <button
                 onClick={() => setHintsExpanded(!hintsExpanded)}
-                className="text-green-400 hover:text-green-300"
-              >
-                {hintsExpanded ? '▼' : '▶'}
+              className="w-full flex items-center justify-between bg-gradient-to-r from-cyan-600/20 to-blue-600/20 p-2 rounded hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-300"
+            >
+              <span className="flex items-center gap-2">
+                <Lightbulb size={16} className="text-cyber-yellow" /> 
+                <span className="text-cyber-blue-100 font-semibold">Hints</span>
+                <Badge variant="secondary" className="ml-2">
+                  {gameProgress.score} pts
+                </Badge>
+              </span>
+              {hintsExpanded ? <ChevronUp size={16} className="text-cyber-blue-100" /> : <ChevronDown size={16} className="text-cyber-blue-100" />}
               </button>
-            </div>
-
             {hintsExpanded && (
-              <div className="space-y-4">
-                {currentChallenge.hints.map((hint) => (
-                  <div
-                    key={hint.id}
-                    className={`p-4 rounded-lg border ${
-                      revealedHints.has(hint.id)
-                        ? 'bg-green-900/20 border-green-500/50'
-                        : 'bg-gray-900/50 border-gray-700'
-                    }`}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm font-semibold text-gray-300">
-                        HINT {hint.id.split('-').pop()}
-                      </span>
-                      <span className="text-sm text-yellow-400">{hint.cost} pts</span>
-                    </div>
-                    {revealedHints.has(hint.id) ? (
-                      <p className="text-gray-300">{hint.text}</p>
+              <ul className="mt-3 space-y-2">
+                {currentChallenge.hints.map((hint, index) => {
+                  const isRevealed = hint.isRevealed || revealedHints.has(hint.id);
+                  return (
+                    <li key={hint.id} className="bg-gradient-to-r from-cyan-600/10 to-blue-600/10 p-3 rounded border border-cyber-blue-200/20">
+                      {isRevealed ? (
+                        <p className="text-cyber-blue-100 text-sm">{hint.text}</p>
                     ) : (
                       <button
                         onClick={() => handleHintReveal(hint)}
-                        className="w-full py-2 px-4 bg-green-600/20 hover:bg-green-600/30 text-green-400 rounded-lg transition-colors"
+                          className="w-full flex items-center justify-between text-cyber-gray-400 hover:text-cyber-blue-100 transition-colors duration-200"
                       >
-                        REVEAL HINT
+                          <span className="text-sm">Hint {index + 1}</span>
+                          <span className="text-xs bg-cyber-blue-200/20 px-2 py-1 rounded">{hint.cost} pts</span>
                       </button>
                     )}
-                  </div>
-                ))}
-              </div>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
-          </div>
+          </Card>
         </div>
       </div>
 
-      {/* Success Modal */}
+      <AnimatePresence>
       {showSuccessModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-gradient-to-br from-gray-900 via-green-900/20 to-black border-2 border-green-500 rounded-xl p-8 max-w-lg w-full mx-4">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-green-400 mb-4">MISSION ACCOMPLISHED</h2>
-              <p className="text-gray-300 mb-6">
-                You've successfully decoded the enemy transmission and exposed their plans!
-              </p>
-              <div className="space-y-4">
-                <div className="bg-green-900/20 p-4 rounded-lg">
-                  <p className="text-green-300 font-mono">+{currentChallenge.points} points earned</p>
-                </div>
-                <button
-                  onClick={() => navigate('/map')}
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-500 hover:to-emerald-500 transition-all font-semibold"
-                >
-                  CONTINUE OPERATION
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black flex items-center justify-center z-50"
+          >
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="bg-gradient-to-br from-cyber-black via-cyber-blue-900 to-cyber-green-900 border-4 border-cyber-green-300 shadow-2xl rounded-2xl p-10 max-w-lg w-full mx-4 relative overflow-hidden"
+            >
+              {/* Confetti/Particles */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                initial={{ opacity: 1 }}
+                animate={{ opacity: 1 }}
+                style={{ zIndex: 1 }}
+              >
+                {[...Array(18)].map((_, i) => {
+                  const left = Math.random() * 100;
+                  const delay = i * 0.13;
+                  const duration = 1.7 + Math.random() * 0.8;
+                  return (
+                    <motion.div
+                      key={i}
+                      className="absolute"
+                      style={{
+                        left: `${left}%`,
+                        bottom: '-30px',
+                      }}
+                      initial={{ y: 0, opacity: 1 }}
+                      animate={{ y: -420, opacity: [1, 1, 0] }}
+                      transition={{
+                        duration,
+                        delay,
+                        ease: 'easeOut',
+                      }}
+                    >
+                      <Sparkles size={18} className="text-cyber-green-200 drop-shadow-glow" />
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
 
-      <style>{`
-        @keyframes matrix-fall {
-          0% { transform: translateY(-100vh); opacity: 1; }
-          100% { transform: translateY(100vh); opacity: 0; }
-        }
-        .blink {
-          animation: blink 1s infinite;
-        }
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0.3; }
-        }
-      `}</style>
+              <div className="relative z-10 text-center">
+                <motion.div variants={itemVariants}>
+                  <div className="relative inline-block">
+                    <CheckCircle size={90} className="mx-auto mb-4 text-cyber-green-200 drop-shadow-glow animate-bounce-slow" />
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        rotate: [0, 5, -5, 0],
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                      className="absolute -top-2 -right-2"
+                    >
+                      <Star size={28} className="text-cyber-yellow" fill="currentColor" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                <motion.h2 variants={itemVariants} className="text-4xl font-cyber text-cyber-green-100 mb-2 drop-shadow-glow">
+                  Level Complete!
+                </motion.h2>
+
+                <motion.div variants={itemVariants} className="space-y-4 mb-6">
+                  <div className="flex items-center justify-center gap-2 text-cyber-yellow text-lg">
+                    <Trophy size={24} />
+                    <span>+{currentChallenge?.points} Points!</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 text-cyber-blue-100 text-base">
+                    <Clock size={20} />
+                    <span>Time: {formatTime(timer)}</span>
+                </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+                  <Button
+                    variant="primary"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyber-green-400 to-cyber-blue-400 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-lg hover:scale-105 hover:shadow-cyber-green-200/40 transition-all duration-300"
+                    onClick={() => navigate('/challenge/crypto-3')}
+                  >
+                    Next Challenge <ArrowRight size={20} />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex items-center justify-center gap-2 border-cyber-blue-200 text-cyber-blue-100 px-8 py-3 rounded-lg text-lg font-bold hover:bg-cyber-blue-900/30 hover:scale-105 transition-all duration-300"
+                  onClick={() => navigate('/map')}
+                >
+                    Return to Map
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
