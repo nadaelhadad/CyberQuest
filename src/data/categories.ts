@@ -45,19 +45,19 @@ export const categories: Category[] = [
         "solution": "CTF{Strike_02_Subway_21:15}",
         "hints": [
           {
-            "id": "crypto-2-hint-1",
+            "id": "layer1",
             "text": "Hint: Ends in == or = ? That's not random…",
             "cost": 15,
             "isRevealed": false
           },
           {
-            "id": "crypto-2-hint-2",
+            "id": "layer2",
             "text": "Hint: Hex digits cloak the next layer.",
             "cost": 25,
             "isRevealed": false
           },
           {
-            "id": "crypto-2-hint-3",
+            "id": "layer3",
             "text": "Hint: Letters dancing 13 places away.",
             "cost": 35,
             "isRevealed": false
