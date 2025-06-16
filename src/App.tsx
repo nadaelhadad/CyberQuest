@@ -59,7 +59,7 @@ function App() {
           } 
         />
         <Route 
-          path="/challenge/:categoryId/:id" 
+          path="/challenge/:challengeId" 
           element={
             <ProtectedRoute>
               <ChallengePage />
