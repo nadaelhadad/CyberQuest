@@ -45,19 +45,19 @@ export const categories: Category[] = [
         "solution": "CTF{Strike_02_Subway_21:15}",
         "hints": [
           {
-            "id": "layer1",
+            "id": "crypto-2-hint-1",
             "text": "Hint: Ends in == or = ? That's not random…",
             "cost": 15,
             "isRevealed": false
           },
           {
-            "id": "layer2",
+            "id": "crypto-2-hint-2",
             "text": "Hint: Hex digits cloak the next layer.",
             "cost": 25,
             "isRevealed": false
           },
           {
-            "id": "layer3",
+            "id": "crypto-2-hint-3",
             "text": "Hint: Letters dancing 13 places away.",
             "cost": 35,
             "isRevealed": false
@@ -192,7 +192,7 @@ export const categories: Category[] = [
                 "id": "reversing-2",
                 "categoryId": "reversing",
                 "title": "🗜️ Weak Zip",
-                "description": "The logs are zipped with a 'strong' password. Crack the archive to reveal the second shard.",
+                "description": "The logs are zipped with a 'strong' password. Crack the archive to reveal the second shard. Logs captured during unauthorized access by GhostAgent. He thought encrypting the payload was enough...",
                 "difficulty": 2,
                 "points": 100,
                 "solution": "CTF{KeyShard_Bravo_5C3F}",
@@ -218,7 +218,7 @@ export const categories: Category[] = [
                 ],
                 "flag": "CTF{KeyShard_Bravo_5C3F}",
                 "isCompleted": false,
-                "isLocked": true
+                "isLocked": false
             },
             {
                 "id": "reversing-3",
@@ -483,10 +483,10 @@ export const categories: Category[] = [
             "id": "forensics-1",
             "categoryId": "forensics",
             "title": "🔍 Forgotten Selfie",
-            "description": "Every night at 02:17, a pirate signal hijacks a TV channel for 61 seconds. The video? Empty streets. The audio? A voice played backward: 'Find me before dawn.' We recovered five clues. Uncover the hijacker's next move—and who they really are. A selfie from the latest crash says, 'Already left the city.' Prove the speaker never left town.",
+            "description": "Every night at 02:15, a pirate signal hijacks a TV channel for 61 seconds. The video? Empty streets. The audio? A voice played backward: 'Find me before dawn.' We recovered five clues. Uncover the hijacker's next move—and who they really are. A selfie from the latest crash says, 'Already left the city.' Prove the speaker never left town.",
             "difficulty": 1,
             "points": 50,
-            "solution": "CTF{Cairo_Tower_02:17}",
+            "solution": "CTF{Ash_Sheikh_Zayed_02:17:05}",
             "hints": [
                 {
                     "id": "forensics-1-hint-1",
@@ -507,7 +507,7 @@ export const categories: Category[] = [
                 "isRevealed": false
             }
             ],
-            "flag": "CTF{Cairo_Tower_02:17}",
+            "flag": "CTF{Ash_Sheikh_Zayed_02:17:05}",
             "isCompleted": false,
             "isLocked": false
         },
