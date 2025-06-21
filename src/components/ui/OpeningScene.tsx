@@ -17,7 +17,8 @@ const OpeningScene = ({ onComplete }: OpeningSceneProps) => {
   }, []);
 
   const handleStartMission = () => {
-    onComplete();
+    // Navigate to Caesar intro instead of completing
+    navigate('/challenge/crypto-1?showIntro=true');
   };
 
   const handleSkip = () => {
@@ -118,7 +119,7 @@ const OpeningScene = ({ onComplete }: OpeningSceneProps) => {
                        shadow-lg shadow-cyan-500/30 transition-all duration-300
                        hover:shadow-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-opacity-50"
             >
-              Start Mission
+              Start the Journey
             </motion.button>
 
             <motion.button

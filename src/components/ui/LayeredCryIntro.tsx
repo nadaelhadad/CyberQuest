@@ -73,7 +73,7 @@ const slides = [
   }
 ];
 
-const LayeredCryIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+const MirrorBlockIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [slide, setSlide] = useState(0);
   const isLast = slide === slides.length - 1;
   const isFirst = slide === 0;
@@ -132,4 +132,4 @@ const LayeredCryIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) =
   );
 };
 
-export default LayeredCryIntro; 
+export default MirrorBlockIntro; 

@@ -16,8 +16,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     '/',
     '/map',
     '/leaderboard',
-    '/challenge',
-    '/profile'
+    '/challenge'
   ];
 
   // Define routes where Footer should be shown

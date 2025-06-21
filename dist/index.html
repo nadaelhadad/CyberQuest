@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CyberQuest - Cyberpunk Cybersecurity Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="/assets/index-DX7bUpsP.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DyH6dFyH.css">
+  </head>
+  <body class="bg-cyber-dark text-white font-future">
+    <div id="root"></div>
+    <script>
+      // Fetch data from the backend API
+      fetch('http://localhost:3000/api/endpoint')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Data from backend:', data);
+          const root = document.getElementById('root');
+          root.innerHTML = `<h1>${data.message}</h1>`;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    </script>
+  </body>
+</html>

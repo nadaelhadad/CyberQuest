@@ -35,21 +35,47 @@ const GameMapPage: React.FC = () => {
     setCurrentCategory(categoryId);
   };
   
-  const handleChallengeSelect = (categoryId: string, challengeId: string) => {
+  const handleChallengeSelect = (challengeId: string) => {
     setCurrentChallenge(challengeId);
-    navigate(`/challenge/${categoryId}/${challengeId}`);
+    navigate(`/challenge/${challengeId}`);
   };
   
   const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
   
   // Check if user is authenticated before entering a challenge
-  const handleChallengeClick = (categoryId: string, challengeId: string) => {
+  const handleChallengeClick = (challengeId: string) => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
     
-    handleChallengeSelect(categoryId, challengeId);
+    // Special handling for challenges that have tutorials
+    if (challengeId === 'forensics-3') {
+      // Check if tutorial should be shown
+      const showTutorial = !localStorage.getItem('threeSecondBurstGoldIntroShown');
+      if (showTutorial) {
+        navigate(`/challenge/${challengeId}`);
+        return;
+      }
+    }
+    
+    // Special handling for MirrorBlock challenge to show tutorial
+    if (challengeId === 'crypto-3') {
+      // Check if tutorial should be shown
+      const showTutorial = !localStorage.getItem('mirrorBlockIntroShown');
+      if (showTutorial) {
+        navigate(`/challenge/${challengeId}`);
+        return;
+      }
+    }
+    
+    // Special handling for WhisperOne challenge to show opening scene
+    if (challengeId === 'crypto-1') {
+      navigate(`/challenge/${challengeId}?showOpening=true`);
+      return;
+    }
+    
+    handleChallengeSelect(challengeId);
   };
   
   // Get the right icon component
@@ -190,7 +216,7 @@ const GameMapPage: React.FC = () => {
                             whileHover={!isLocked ? "hover" : undefined}
                             whileTap={!isLocked ? "tap" : undefined}
                             className="relative"
-                            onClick={() => !isLocked && handleChallengeClick(selectedCategoryData.id, challenge.id)}
+                            onClick={() => !isLocked && handleChallengeClick(challenge.id)}
                           >
                             <div className={`w-32 h-32 rounded-full flex items-center justify-center cursor-pointer ${
                               isCompleted 
@@ -253,7 +279,7 @@ const GameMapPage: React.FC = () => {
                             whileHover={!isLocked ? "hover" : undefined}
                             whileTap={!isLocked ? "tap" : undefined}
                             className="relative"
-                            onClick={() => !isLocked && handleChallengeClick(selectedCategoryData.id, challenge.id)}
+                            onClick={() => !isLocked && handleChallengeClick(challenge.id)}
                           >
                             <div className={`w-32 h-32 rounded-full flex items-center justify-center cursor-pointer ${
                               isCompleted 

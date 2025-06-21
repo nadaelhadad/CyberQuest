@@ -9,7 +9,6 @@ import ProfilePage from './pages/ProfilePage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuthStore } from './store/authStore';
-import GoldPage from './pages/GoldPage';
 
 function App() {
   const location = useLocation();
@@ -81,10 +80,6 @@ function App() {
               <LeaderboardPage />
             </ProtectedRoute>
           } 
-        />
-        <Route 
-          path="/gold" 
-          element={<GoldPage />} 
         />
         
         {/* Catch all route - redirect to home */}

@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // PostgreSQL connection configuration
 const pool = new Pool({

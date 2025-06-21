@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Download, Lightbulb, Send, Copy, ChevronDown, ChevronUp, CheckCircle, Trophy, Star, Clock, Award, Layers, Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Download, Lightbulb, Send, Copy, ChevronDown, ChevronUp, CheckCircle, Trophy, Star, Clock, Award, Sparkles, ArrowRight } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import Button from './ui/Button';
 import Input from './ui/Input';
@@ -10,7 +10,7 @@ import Badge from './ui/Badge';
 import MeshBackground from './ui/MeshBackground';
 import { Hint } from '../types';
 
-const LayeredCryChallenge: React.FC = () => {
+const LayeredCry = () => {
   const navigate = useNavigate();
   const { submitFlag, gameProgress, currentChallenge, setCurrentChallenge, useHint } = useGameStore();
   const [flagInput, setFlagInput] = useState('');
@@ -21,7 +21,6 @@ const LayeredCryChallenge: React.FC = () => {
   const [hintsExpanded, setHintsExpanded] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [revealedHints, setRevealedHints] = useState<Set<string>>(new Set());
-  const [currentLayer, setCurrentLayer] = useState(1);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -47,8 +46,8 @@ const LayeredCryChallenge: React.FC = () => {
   };
 
   useEffect(() => {
-    if (currentChallenge?.id === "crypto-3") {
-      setCurrentChallenge("crypto-3");
+    if (currentChallenge?.id === "crypto-2") {
+      setCurrentChallenge("crypto-2");
     }
     setIsTimerRunning(true);
     return () => setIsTimerRunning(false);
@@ -105,19 +104,10 @@ const LayeredCryChallenge: React.FC = () => {
       return;
     }
 
-    // Only allow revealing hints in order
-    const hintLayer = parseInt(hint.id.replace('layer', ''));
-    if (hintLayer !== currentLayer) {
-      setSubmissionStatus('error');
-      setSubmissionMessage(`❌ Complete layer ${currentLayer} first!`);
-      return;
-    }
-
     useHint(hint.id);
     setRevealedHints(prev => new Set([...prev, hint.id]));
-    setCurrentLayer(prev => prev + 1);
     setSubmissionStatus('success');
-    setSubmissionMessage(`✅ Layer ${hintLayer} hint revealed! -${hint.cost} points`);
+    setSubmissionMessage(`✅ Hint revealed! -${hint.cost} points`);
 
     setTimeout(() => {
       setSubmissionStatus('idle');
@@ -133,205 +123,129 @@ const LayeredCryChallenge: React.FC = () => {
       <div className="fixed inset-0">
         <MeshBackground />
       </div>
-      <div className="container mx-auto relative z-10">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <button onClick={() => navigate('/map')} className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4">
-              <ArrowLeft size={16} className="mr-2" /> Back to Map
-            </button>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 relative z-10 items-center min-h-[80vh]">
+        <div className="lg:col-span-9 lg:col-start-2 xl:col-span-9 xl:col-start-2 flex flex-col justify-center">
+          <button onClick={() => navigate('/map')} className="flex items-center text-cyber-blue-100 hover:text-cyber-pink-100 mb-4">
+            <ArrowLeft size={16} className="mr-2" /> Back to Map
+          </button>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="p-6 bg-cyber-black bg-opacity-80 border border-cyber-blue-200">
-                <div className="mb-6">
-                  <h1 className="text-2xl font-cyber text-cyber-blue-100 mb-2">🧊 Layered Cry – Silver</h1>
-                  <div className="flex items-center justify-between">
-                    <p className="text-white text-sm">{currentChallenge.description}</p>
-                    <div className="flex items-center gap-2 text-cyber-yellow">
-                      <Layers size={16} />
-                      <span>Layer {currentLayer}/3</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Download Section */}
-                <div className="mb-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="p-12 md:p-16 xl:p-20 bg-cyber-black bg-opacity-80 border border-cyber-blue-200 text-lg xl:text-xl min-h-[500px] flex flex-col justify-center">
+              <div className="mb-6">
+                <h1 className="text-2xl font-cyber text-cyber-blue-100 mb-2">🧊 Layered Cry – Silver</h1>
+                <div className="flex items-center gap-4">
+                  <p className="text-white text-lg flex-1">Next message is wrapped three times. Strip every layer to find strike two.</p>
                   <Button
-                    onClick={() => window.open('/assets/challenges/whisper2.txt', '_blank')}
-                    className="w-full flex items-center justify-center gap-2"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/assets/challenges/whisper2.txt';
+                      link.download = 'whisper2.txt';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-emerald-500/20 font-semibold whitespace-nowrap"
                   >
                     <Download size={16} />
-                    Download Encrypted Message
+                    Download
                   </Button>
                 </div>
+              </div>
 
-                {/* Tool Hints Section */}
-                <div className="mb-6">
-                  <h2 className="text-cyber-yellow text-sm font-bold mb-2">Decryption Tools</h2>
-                  <ul className="space-y-2">
-                    <li>
-                      <a
-                        href="https://gchq.github.io/CyberChef/#recipe=From_Base64()"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-cyber-blue-100 hover:text-cyber-pink-100 flex items-center gap-2"
-                      >
-                        <span>•</span> From Base64
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://gchq.github.io/CyberChef/#recipe=From_Hex()"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-cyber-blue-100 hover:text-cyber-pink-100 flex items-center gap-2"
-                      >
-                        <span>•</span> From Hex
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="https://gchq.github.io/CyberChef/#recipe=ROT13()"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-cyber-blue-100 hover:text-cyber-pink-100 flex items-center gap-2"
-                      >
-                        <span>•</span> ROT13
-                      </a>
-                    </li>
-                  </ul>
+              {/* Tool Hints Section */}
+              <div className="mb-6">
+                <h2 className="text-cyber-yellow text-sm font-bold mb-2">Decryption Tools</h2>
+                <div className="space-y-2">
+                  <a
+                    href="https://gchq.github.io/CyberChef"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-500/20 font-semibold"
+                  >
+                    <span className="text-xl">🧪</span>
+                    CyberChef - Advanced Decryption Tool
+                  </a>
                 </div>
-
-                {/* Flag Submission */}
-                <div className="mb-4">
-                  <Input
-                    fullWidth
-                    value={flagInput}
-                    onChange={(e) => setFlagInput(e.target.value)}
-                    placeholder="Enter your flag here"
-                  />
-                  <Button onClick={handleFlagSubmit} variant="primary" className="mt-2">
-                    <Send size={16} className="mr-2" /> Submit
-                  </Button>
-                  {submissionStatus !== 'idle' && (
-                    <div className={`mt-3 p-2 text-sm rounded ${
-                      submissionStatus === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
-                    }`}>
-                      {submissionMessage}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex justify-between text-white text-sm">
-                  <div className="flex items-center gap-2">
-                    <Clock size={16} /> {formatTime(timer)}
+              </div>
+              
+              {/* Flag Submission */}
+              <div className="mb-4">
+                <Input
+                  fullWidth
+                  value={flagInput}
+                  onChange={(e) => setFlagInput(e.target.value)}
+                  placeholder="Enter your flag here"
+                />
+                <Button 
+                  onClick={handleFlagSubmit}
+                  variant="primary" 
+                  className="mt-2 w-full flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-violet-500/20 font-semibold"
+                >
+                  <Send size={16} className="mr-2" /> Submit
+                </Button>
+                {submissionStatus !== 'idle' && (
+                  <div className={`mt-3 p-2 text-sm rounded ${
+                    submissionStatus === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
+                  }`}>
+                    {submissionMessage}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Award size={16} /> {currentChallenge.points} pts | Player: {gameProgress.score} pts
-                  </div>
-                </div>
+                )}
+              </div>
 
-                {/* Hints Section */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-cyber-yellow text-sm font-bold">Layer Hints</h2>
-                    <button
-                      onClick={() => setHintsExpanded(!hintsExpanded)}
-                      className="text-cyber-blue-100 hover:text-cyber-pink-100"
-                    >
-                      {hintsExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                    </button>
-                  </div>
-                  <AnimatePresence>
-                    {hintsExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="space-y-3">
-                          {currentChallenge.hints.map((hint) => (
-                            <div
-                              key={hint.id}
-                              className={`p-3 rounded-lg border ${
-                                revealedHints.has(hint.id)
-                                  ? 'bg-cyber-blue-900/30 border-cyber-blue-200'
-                                  : 'bg-cyber-black/50 border-cyber-blue-900'
-                              }`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                  <Lightbulb size={16} className="text-cyber-yellow" />
-                                  <span className="text-sm text-cyber-blue-100">
-                                    {revealedHints.has(hint.id) ? hint.text : 'Hidden Hint'}
-                                  </span>
-                                </div>
-                                {!revealedHints.has(hint.id) && (
-                                  <button
-                                    onClick={() => handleHintReveal(hint)}
-                                    className="hover:opacity-80 transition-opacity"
-                                  >
-                                    <Badge className="bg-cyber-blue-900 hover:bg-cyber-blue-800">
-                                      Reveal ({hint.cost} pts)
-                                    </Badge>
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+              <div className="flex justify-between text-white text-sm">
+                <div className="flex items-center gap-2">
+                  <Clock size={16} /> {formatTime(timer)}
                 </div>
-              </Card>
-            </motion.div>
-          </div>
-
-          <div>
-            <Card className="p-4 bg-cyber-black border border-cyber-blue-100">
-              <button
-                onClick={() => setHintsExpanded(!hintsExpanded)}
-                className="w-full flex items-center justify-between bg-cyber-gray p-2 rounded"
-              >
-                <span className="flex items-center gap-2">
-                  <Lightbulb size={16} /> 
-                  Hints
-                  <Badge variant="secondary" className="ml-2">
-                    {gameProgress.score} pts
-                  </Badge>
-                </span>
-                {hintsExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </button>
-              {hintsExpanded && (
-                <ul className="mt-3 space-y-3">
-                  {currentChallenge.hints.map((hint, index) => {
-                    const isRevealed = hint.isRevealed || revealedHints.has(hint.id);
-                    return (
-                      <li key={hint.id} className="bg-cyber-gray/50 p-3 rounded">
-                        {isRevealed ? (
-                          <p className="text-cyber-blue-100">{hint.text}</p>
-                        ) : (
-                          <button
-                            onClick={() => handleHintReveal(hint)}
-                            className="w-full flex items-center justify-between text-cyber-gray-400 hover:text-cyber-blue-100"
-                          >
-                            <span>Hint {index + 1}</span>
-                            <span className="text-xs">{hint.cost} pts</span>
-                          </button>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                <div className="flex items-center gap-2">
+                  <Award size={16} /> {currentChallenge.points} pts | Player: {gameProgress.score} pts
+                </div>
+              </div>
             </Card>
-          </div>
+          </motion.div>
+        </div>
+
+        <div className="lg:col-span-2 lg:col-start-11 flex flex-col justify-center">
+          <Card className="p-4 bg-cyber-black border border-cyber-blue-100 backdrop-blur-sm bg-opacity-90">
+            <button
+              onClick={() => setHintsExpanded(!hintsExpanded)}
+              className="w-full flex items-center justify-between bg-gradient-to-r from-cyan-600/20 to-blue-600/20 p-2 rounded hover:from-cyan-500/20 hover:to-blue-500/20 transition-all duration-300"
+            >
+              <span className="flex items-center gap-2">
+                <Lightbulb size={16} className="text-cyber-yellow" /> 
+                <span className="text-cyber-blue-100 font-semibold">Hints</span>
+                <Badge variant="secondary" className="ml-2">
+                  {gameProgress.score} pts
+                </Badge>
+              </span>
+              {hintsExpanded ? <ChevronUp size={16} className="text-cyber-blue-100" /> : <ChevronDown size={16} className="text-cyber-blue-100" />}
+            </button>
+            {hintsExpanded && (
+              <ul className="mt-3 space-y-2">
+                {currentChallenge.hints.map((hint, index) => {
+                  const isRevealed = hint.isRevealed || revealedHints.has(hint.id);
+                  return (
+                    <li key={hint.id} className="bg-gradient-to-r from-cyan-600/10 to-blue-600/10 p-3 rounded border border-cyber-blue-200/20">
+                      {isRevealed ? (
+                        <p className="text-cyber-blue-100 text-sm">{hint.text}</p>
+                      ) : (
+                        <button
+                          onClick={() => handleHintReveal(hint)}
+                          className="w-full flex items-center justify-between text-cyber-gray-400 hover:text-cyber-blue-100 transition-colors duration-200"
+                        >
+                          <span className="text-sm">Hint {index + 1}</span>
+                          <span className="text-xs bg-cyber-blue-200/20 px-2 py-1 rounded">{hint.cost} pts</span>
+                        </button>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </Card>
         </div>
       </div>
 
@@ -422,7 +336,7 @@ const LayeredCryChallenge: React.FC = () => {
                   <Button
                     variant="primary"
                     className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyber-green-400 to-cyber-blue-400 text-white px-8 py-3 rounded-lg text-lg font-bold shadow-lg hover:scale-105 hover:shadow-cyber-green-200/40 transition-all duration-300"
-                    onClick={() => navigate('/challenge/crypto-4')}
+                    onClick={() => navigate('/challenge/crypto-3')}
                   >
                     Next Challenge <ArrowRight size={20} />
                   </Button>
@@ -443,4 +357,4 @@ const LayeredCryChallenge: React.FC = () => {
   );
 };
 
-export default LayeredCryChallenge; 
+export default LayeredCry;

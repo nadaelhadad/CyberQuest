@@ -1,76 +1,111 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const slides = [
   {
-    title: "What is a Caesar Cipher?",
+    title: "A Note That Looks… Silly?",
+    icon: "🕵️‍♀️",
+    lines: [
+      "You've found a note that says:",
+      "\"Pngf vf sha!\"",
+      "",
+      "At first glance, it seems like nonsense. But cybersecurity professionals know: anything strange might be a cipher.",
+      "It's your job to decrypt this innocent-looking message and reveal the strike details hidden within."
+    ]
+  },
+  {
+    title: "What Is a Caesar Cipher?",
     icon: "🔐",
     lines: [
-      "A Caesar cipher is one of the oldest encryption methods.",
-      "It shifts each letter in the alphabet by a fixed number of positions.",
-      "Julius Caesar used this to send secret messages to his generals.",
-      "Today, it's a great way to learn basic cryptography concepts."
+      "The Caesar cipher is one of the oldest known encryption techniques.",
+      "It works by shifting each letter in a message by a fixed number of places in the alphabet.",
+      "",
+      "For example:",
+      "• A → D (shift 3)",
+      "• B → E",
+      "• Z → C (wraps around!)",
+      "",
+      "It's simple, but when used cleverly — like in this challenge — it can still hide secrets in plain sight."
     ]
   },
   {
-    title: "How Does It Work?",
-    icon: "🔄",
+    title: "Meet ROT13: A Special Caesar",
+    icon: "🔁",
     lines: [
-      "Each letter is replaced by a letter a certain number of positions down the alphabet.",
-      "For example, with a shift of 3: A becomes D, B becomes E, C becomes F...",
-      "The alphabet wraps around, so Z becomes C with a shift of 3.",
-      "The key is knowing how many positions to shift."
+      "ROT13 is a variant of the Caesar cipher that shifts each letter exactly 13 places.",
+      "The twist? Doing it twice brings the message back to the original — so ROT13 is its own reverse!",
+      "",
+      "Why use ROT13?",
+      "It's often used in jokes, puzzles, or to obscure spoilers — and in our case: clues to a cyber attack."
     ]
   },
   {
-    title: "Breaking the Code",
-    icon: "🔍",
+    title: "Try It Yourself in CyberChef",
+    icon: "🧰",
     lines: [
-      "Since there are only 25 possible shifts (1-25), it's easy to try them all.",
-      "Look for patterns that make sense in English.",
-      "Common words like 'THE', 'AND', 'FOR' can help identify the correct shift.",
-      "The message should read like normal English when decoded correctly."
+      "Head over to CyberChef, one of the most beginner-friendly tools for decoding simple ciphers.",
+      "",
+      "There, you can:",
+      "• Paste the note",
+      "• Apply the \"ROT13\" operation",
+      "• Instantly reveal the real message",
+      "",
+      "Keep an eye out — a real CTF flag might appear when you decrypt the second line, too!"
     ]
   },
   {
-    title: "Your Mission",
-    icon: "📱",
-    lines: [
-      "You found a phone with a Caesar cipher on the lock screen.",
-      "The message is encrypted with a shift cipher.",
-      "Use the Caesar Cipher tool to try different shifts.",
-      "Find the correct shift to unlock the phone and reveal the secret message."
-    ]
-  },
-  {
-    title: "Tools You'll Use",
-    icon: "🛠️",
-    lines: [
-      "Caesar Cipher Tool: Try different shift values",
-      "Look for readable text as you adjust the shift",
-      "The flag format will be clear once you decode it",
-      "Remember: the message should make sense in English!"
-    ]
-  },
-  {
-    title: "Ready to Decrypt?",
+    title: "Your Objective",
     icon: "🎯",
     lines: [
-      "You have the tools and knowledge to break this cipher.",
-      "Start with common shifts like 3, 13, or 25.",
-      "Look for patterns that form real words.",
-      "Good luck, code breaker!"
+      "• Decrypt both lines of the note",
+      "• Understand how ROT13 works",
+      "• Locate the correct flag and enter it in the challenge input",
+      "",
+      "This is your first step into the world of classic ciphers. Learn it well — many future challenges will build on it."
     ]
   }
 ];
 
 const CaesarIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [slide, setSlide] = useState(0);
+  const [slideJump, setSlideJump] = useState(0);
   const isLast = slide === slides.length - 1;
   const isFirst = slide === 0;
   const { title, icon, lines } = slides[slide];
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('slide') === 'last') {
+      setSlide(slides.length - 1);
+      setSlideJump(j => j + 1);
+    }
+  }, [location.search]);
+
+  const handleSkipTutorial = () => {
+    localStorage.setItem('caesarIntroShown', 'true');
+    onComplete();
+  };
+
   return (
     <div className="relative w-full max-w-2xl mx-auto bg-cyber-black/95 border-2 border-transparent rounded-2xl p-0 mt-24 shadow-2xl overflow-hidden">
+      {/* Back to Story button */}
+      <button
+        onClick={() => navigate('/challenge/crypto-1?showOpening=true')}
+        className="absolute top-4 left-4 z-20 px-4 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-cyber-gray-700 to-cyber-blue-700 hover:from-cyber-blue-600 hover:to-cyber-purple-600 transition-all duration-300 hover:scale-105"
+      >
+        ← Back to the Story
+      </button>
+
+      {/* Skip Tutorial button */}
+      <button
+        onClick={handleSkipTutorial}
+        className="absolute top-4 right-4 z-20 px-4 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-cyber-gray-700 to-cyber-red-700 hover:from-cyber-red-600 hover:to-cyber-pink-600 transition-all duration-300 hover:scale-105"
+      >
+        Skip Tutorial
+      </button>
+      
       {/* Neon Gradient Border */}
       <div className="absolute inset-0 rounded-2xl pointer-events-none z-0" style={{
         background: 'linear-gradient(120deg, #00f0ff 0%, #a259ff 50%, #ff26a9 100%)',
@@ -94,13 +129,16 @@ const CaesarIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
           ))}
         </ul>
         <div className="flex justify-between w-full max-w-2xl mt-auto">
-          <button
-            onClick={() => setSlide(slide - 1)}
-            disabled={isFirst}
-            className={`px-6 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-cyber-gray-700 to-cyber-blue-700 transition-all duration-300 ${isFirst ? 'opacity-40 cursor-not-allowed' : 'hover:from-cyber-blue-600 hover:to-cyber-purple-600 hover:scale-105'}`}
-          >
-            ← Back
-          </button>
+          {!isFirst ? (
+            <button
+              onClick={() => setSlide(slide - 1)}
+              className="px-6 py-2 rounded-lg font-bold text-white bg-gradient-to-r from-cyber-gray-700 to-cyber-blue-700 transition-all duration-300 hover:from-cyber-blue-600 hover:to-cyber-purple-600 hover:scale-105"
+            >
+              ← Back
+            </button>
+          ) : (
+            <div></div> // Empty div to maintain layout
+          )}
           {!isLast ? (
             <button
               onClick={() => setSlide(slide + 1)}
@@ -110,7 +148,11 @@ const CaesarIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
             </button>
           ) : (
             <button
-              onClick={onComplete}
+              onClick={() => {
+                // Mark tutorial as completed and call the onComplete callback
+                localStorage.setItem('caesarIntroShown', 'true');
+                onComplete();
+              }}
               className="px-8 py-3 rounded-lg font-bold text-white bg-gradient-to-r from-cyber-green-500 to-cyber-blue-500 hover:from-cyber-green-400 hover:to-cyber-blue-400 text-lg shadow-lg transition-all duration-300 hover:scale-105"
             >
               Start Challenge 🎯
