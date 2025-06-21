@@ -35,21 +35,21 @@ const GameMapPage: React.FC = () => {
     setCurrentCategory(categoryId);
   };
   
-  const handleChallengeSelect = (challengeId: string) => {
+  const handleChallengeSelect = (categoryId: string, challengeId: string) => {
     setCurrentChallenge(challengeId);
-    navigate(`/challenge/${challengeId}`);
+    navigate(`/challenge/${categoryId}/${challengeId}`);
   };
   
   const selectedCategoryData = categories.find(cat => cat.id === selectedCategory);
   
   // Check if user is authenticated before entering a challenge
-  const handleChallengeClick = (challengeId: string) => {
+  const handleChallengeClick = (categoryId: string, challengeId: string) => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
     
-    handleChallengeSelect(challengeId);
+    handleChallengeSelect(categoryId, challengeId);
   };
   
   // Get the right icon component
@@ -190,7 +190,7 @@ const GameMapPage: React.FC = () => {
                             whileHover={!isLocked ? "hover" : undefined}
                             whileTap={!isLocked ? "tap" : undefined}
                             className="relative"
-                            onClick={() => !isLocked && handleChallengeClick(challenge.id)}
+                            onClick={() => !isLocked && handleChallengeClick(selectedCategoryData.id, challenge.id)}
                           >
                             <div className={`w-32 h-32 rounded-full flex items-center justify-center cursor-pointer ${
                               isCompleted 
@@ -253,7 +253,7 @@ const GameMapPage: React.FC = () => {
                             whileHover={!isLocked ? "hover" : undefined}
                             whileTap={!isLocked ? "tap" : undefined}
                             className="relative"
-                            onClick={() => !isLocked && handleChallengeClick(challenge.id)}
+                            onClick={() => !isLocked && handleChallengeClick(selectedCategoryData.id, challenge.id)}
                           >
                             <div className={`w-32 h-32 rounded-full flex items-center justify-center cursor-pointer ${
                               isCompleted 

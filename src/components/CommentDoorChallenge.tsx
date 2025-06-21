@@ -23,6 +23,8 @@ const CommentDoorChallenge: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const correctFlag = 'CTF{Runway_Zero_Gate_A}'; // Use the actual flag from challenge data if available
+  const [isCompleted, setIsCompleted] = useState(false);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -44,16 +46,25 @@ const CommentDoorChallenge: React.FC = () => {
     window.open('/comment-door/index.html', '_blank');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (flag.trim() === '') {
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    console.log('Submitted flag:', flag);
+    if (!flag.trim()) {
       setError('Please enter a flag');
+      setSubmissionStatus('error');
+      setSubmissionMessage('Please enter a flag');
       return;
     }
-    if (flag === 'CTF{COMMENT_DOOR_123}') {
-      setSuccess(true);
+    if (flag.trim() === correctFlag) {
+      setIsCompleted(true);
+      setError('');
+      setSubmissionStatus('success');
+      setSubmissionMessage('✅ Correct! Challenge completed.');
+      setShowSuccessModal(true);
     } else {
-      setError('Invalid flag. Try again!');
+      setError('❌ Incorrect flag. Try again.');
+      setSubmissionStatus('error');
+      setSubmissionMessage('❌ Incorrect flag. Try again.');
     }
   };
 
@@ -120,7 +131,7 @@ const CommentDoorChallenge: React.FC = () => {
                 
 
                 {/* Flag Submission */}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form className="space-y-4">
                   <div>
                     <label htmlFor="flag" className="block text-cyber-yellow text-sm font-bold mb-2">
                       Submit Flag
@@ -134,7 +145,8 @@ const CommentDoorChallenge: React.FC = () => {
                     />
                   </div>
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     className="bg-purple-700 hover:bg-purple-800 text-white w-full py-2.5 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-700/20 font-semibold flex items-center justify-between"
                   >
                     <span>Submit Flag</span>
