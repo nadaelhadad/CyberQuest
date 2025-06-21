@@ -250,40 +250,40 @@ export const categories: Category[] = [
                 ],
                 "flag": "CTF{KeyShard_Charlie_22D9}",
                 "isCompleted": false,
-                "isLocked": true
+                "isLocked": false
             },
             {
-                "id": "reversing-4",
-                "categoryId": "reversing",
-                "title": "🎵 Number Song",
-                "description": "The main.js file is filled with numbers and eval calls. Decode it and find the fourth shard.",
-                "difficulty": 4,
-                "points": 200,
-                "solution": "CTF{KeyShard_Delta_9A71}",
-                "hints": [
-                    {
-                        "id": "reversing-4-hint-1",
-                        "text": "Numbers sing an ASCII tune.",
-                        "cost": 60,
-                        "isRevealed": false
-                    },
-                    {
-                      "id": "reversing-4-hint-2",
-                      "text": "Characters form from coded notes.",
-                      "cost": 70,
-                      "isRevealed": false
-                  },
-                  {
-                    "id": "reversing-4-hint-3",
-                    "text": "Shifted strings hide deeper truth.",
-                    "cost": 90,
-                    "isRevealed": false
+              "id": "reversing-4",
+              "categoryId": "reversing",
+              "title": "🎵 Number Song",
+              "description": "You’ve downloaded a ZIP file, but instead of music, it contains a `main.js` file packed with suspicious hex values and JavaScript. Somewhere inside it hides the fourth shard. Can you decrypt the melody and reveal the secret?",
+              "difficulty": 3,
+              "points": 150,
+              "solution": "CTF{KeyShard_Delta_9A1B}",
+              "hints": [
+                {
+                  "id": "reversing-4-hint-1",
+                  "text": "The hex isn't garbage. It’s likely an audio file hidden in disguise.",
+                  "cost": 25,
+                  "isRevealed": false
+                },
+                {
+                  "id": "reversing-4-hint-2",
+                  "text": "`main.js` might be using JavaScript to reconstruct or play the sound. Try reading, not running.",
+                  "cost": 35,
+                  "isRevealed": false
+                },
+                {
+                  "id": "reversing-4-hint-3",
+                  "text": "Extract the hex string and try converting it to binary or use CyberChef to detect audio signatures like WAV or MP3.",
+                  "cost": 45,
+                  "isRevealed": false
                 }
-                ],
-                "flag": "CTF{KeyShard_Delta_9A71}",
-                "isCompleted": false,
-                "isLocked": true
-            },
+              ],
+              "flag": "CTF{KeyShard_Delta_9A1B}",
+              "isCompleted": false,
+              "isLocked": false
+            },            
             {
                 "id": "reversing-5",
                 "categoryId": "reversing",
@@ -347,7 +347,7 @@ export const categories: Category[] = [
               "description": "The /gold page uses a seatClass cookie. Can you upgrade it to gain admin privileges?",
               "difficulty": 2,
               "points": 100,
-              "solution": "CTF{Admin_Cabin_Seat_1A}",
+              "solution": "CTF{Admin_Cabin_Seat_1A)}",
               "hints": [
                   {
                       "id": "web-2-hint-1",
@@ -363,14 +363,14 @@ export const categories: Category[] = [
                 },
                 {
                       "id": "web-2-hint-3",
-                      "text": "New class unlocks secret doors'.",
+                      "text": "New class unlocks secret doors.",
                       "cost": 65,
                       "isRevealed": false
                   }
               ],
-              "flag": "CTF{Admin_Cabin_Seat_1A}",
+              "flag": "CTF{Admin_Cabin_Seat_1A)}",
               "isCompleted": false,
-              "isLocked": true
+              "isLocked": false
           },
           {
               "id": "web-3",
@@ -402,7 +402,7 @@ export const categories: Category[] = [
               ],
               "flag": "CTF{Cargo_Hold_Map_B4}",
               "isCompleted": false,
-              "isLocked": true
+              "isLocked": false
           },
           {
               "id": "web-4",
